@@ -110,8 +110,6 @@ namespace SalesTaxesConsoleApp
             Double total = 0;
             foreach (var item in shoppingCart)
             {
-                //? Need parseFloat as parseInt will only parse the leading part of the string that defines a whole number.
-                //? Reference: https://stackoverflow.com/questions/28894971/problems-with-javascript-parseint-decimal-string
                 total += item.TotalPriceAfterTax;
             }
             return total;
