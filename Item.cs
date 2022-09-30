@@ -12,37 +12,34 @@ namespace SalesTaxesConsoleApp
         public bool IsImport;
         public string Type;
         public string ItemRetailPrice;
-        //private string _accruedOverallTax;
-        //private string _addedTax;
-        //private string _importTax;
-        //private string _salesTax;
-        //private string _accruedImportTax;
-        //private string _accruedSalesTax;
-        //private string _totalPrice;
-        //private string _totalPriceAfterTax;
-        //private int _quantity;
+        public Double ImportTax;
+        public Double SalesTax;
+        public Double AddedTax;
+        public Double TotalPriceAfterTax;
+        public string TotalPrice;
+        public int Quantity;
+        public Double AccruedOverallTax;
+        public Double AccruedImportTax;
+        public Double AccruedSalesTax;
 
-
-        //public Item(string itemName, string itemRetailPrice, string accruedOverallTax,
-        //    string addedTax, string importTax, string salesTax, string accruedImportTax,
-        //    string accruedSalesTax, string totalPrice, string totalPriceAfterTax, bool isImport,
-        //    string type, int quantity)
-
-        public Item(string itemName, string itemRetailPrice, bool isImport, string type)
+        public Item
+        (
+            string itemName, string itemRetailPrice, bool isImport, string type, Double importTax, Double salesTax, Double addedTax, Double itemPriceAfterAllTaxes, 
+            Double accruedImportTax, Double accruedSalesTax, Double accruedOverallTax, string totalPrice, int quantity)
         {
             ItemName = itemName;
             IsImport = isImport;
             Type = type;
             ItemRetailPrice = itemRetailPrice;
-            //_accruedOverallTax = accruedOverallTax;
-            //_addedTax = addedTax;
-            //_importTax = importTax;
-            //_salesTax = salesTax;
-            //_accruedImportTax = accruedImportTax;
-            //_accruedSalesTax = accruedSalesTax;
-            //_totalPrice = totalPrice;
-            //_totalPriceAfterTax = totalPriceAfterTax;         
-            //_quantity = quantity;
+            ImportTax = importTax;
+            SalesTax = salesTax;
+            AddedTax = addedTax;
+            TotalPriceAfterTax = itemPriceAfterAllTaxes;
+            TotalPrice = totalPrice;
+            Quantity = quantity;
+            AccruedOverallTax = accruedOverallTax;
+            AccruedImportTax = accruedSalesTax;
+            AccruedSalesTax = accruedImportTax;
         }
     }
 }

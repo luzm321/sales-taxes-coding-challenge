@@ -2,27 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SalesTaxesConsoleApp
 {
     class CurrencyToNumberConverter
     {
-        //public string convertFromCurrency(string numberInStringForm)
-        //{
-        //    string newNumber;
-        //    if (numberInStringForm.ToString().Contains('$'))
-        //    {
-        //        newNumber = numberInStringForm.Replace('$', ' ');
-        //    }
-        //    else
-        //    {
-        //        newNumber = numberInStringForm;
-        //    }
-        //    // This line is in case numbers with a comma are passed. The toString() is there in case theres a number passed and not a string.
-        //    // Without this line the code will break, because you cannot do a replace on a number.
-        //    newNumber = float.TryParse(newNumber.ToString().Replace(',', ' '));
-        //    return newNumber;
-        //}
+        public Double ConvertFromCurrency(string numberInStringForm)
+        {
+            string newNumber;
+            if (numberInStringForm.Contains("$"))
+            {
+                newNumber = numberInStringForm.Replace("$", "");
+            }
+            else
+            {
+                newNumber = numberInStringForm;
+            }
+            string strRegex = "/,/g";
+            newNumber = Regex.Replace(newNumber, strRegex, "");
+            return Double.Parse(newNumber);
+        }
     }
 }

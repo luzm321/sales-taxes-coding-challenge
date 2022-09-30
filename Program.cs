@@ -27,30 +27,57 @@ namespace SalesTaxesConsoleApp
             string response = "";
             ShoppingCart shoppingCart = new ShoppingCart();
 
-            while(shoppingInProgress)
+            while (shoppingInProgress)
             {
                 DisplayProducts(products);
                 Console.WriteLine();
                 Console.Write("Select item to purchase: ");
                 response = Console.ReadLine().ToLower();
-                Product productSelected = products[Int32.Parse(response) - 1];
-                Item selectedItem = new Item(productSelected.Name, productSelected.Price, productSelected.Import, productSelected.Type);
-                shoppingCart.AddItemToShoppingCart(selectedItem);
-                Console.WriteLine($"{productSelected.Name} was added to cart!");
-                Console.WriteLine();
-                Console.Write("Ready to checkout? (Y/N): ");
-                response = Console.ReadLine().ToLower();
-                if (response == "y")
+                bool responseIsNumber = int.TryParse(response, out _);
+                // Error Handling: Check if user input is a number
+                if (responseIsNumber)
                 {
-                    shoppingInProgress = false;
+                    int numberSelection = int.Parse(response);
+                    // Check that number is within range and above 0
+                    if (numberSelection <= products.Count && numberSelection > 0)
+                    {
+                        Product productSelected = products[Int32.Parse(response) - 1];
+                        Tuple<Double, Double, Double, Double> taxCalculations = new TaxCalculation(productSelected).CalculateTaxesOfItem();
+                        Double importTax = taxCalculations.Item1;
+                        Double salesTax = taxCalculations.Item2;
+                        Double addedTax = taxCalculations.Item3;
+                        Double itemPriceAfterAllTaxes = taxCalculations.Item4;
+                        Item selectedItem = new Item
+                        (
+                            productSelected.Name, productSelected.Price, productSelected.Import, productSelected.Type, importTax, salesTax, addedTax, 
+                            itemPriceAfterAllTaxes, importTax, salesTax, addedTax, productSelected.Price, 1
+                        );
+                        shoppingCart.AddItemToShoppingCart(selectedItem);
+                        Console.WriteLine($"{productSelected.Name} was added to cart! Quantity in Cart: {shoppingCart.GetItemsFromShoppingCart().Count}");
+                        Console.WriteLine();
+                        Console.Write("Ready to checkout? (Y/N): ");
+                        response = Console.ReadLine().ToLower();
+                        if (response == "y")
+                        {
+                            shoppingInProgress = false;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("The number you selected is not valid and must be from 1 - 6");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Please type in a valid number from the product selection displayed.");
                 }
             }
 
             List<Item> cart = shoppingCart.GetItemsFromShoppingCart();
             Console.WriteLine("------------------------------------");
             Console.WriteLine($"Number of Items in Cart: {cart.Count}");
-            DisplayShoppingCart(cart);
-    
+            DisplayReceipt(cart);
+
         }
 
         public static void DisplayProducts(List<Product> products)
@@ -58,20 +85,46 @@ namespace SalesTaxesConsoleApp
             int i = 1;
             foreach (var item in products)
             {
-                Console.WriteLine($"{i}) Name: {item.Name} || Price: {item.Price}");
+                Console.WriteLine($"{i}) Name: {item.Name} || Price: {item.Price}$");
                 i++;
             }
         }
 
-        public static void DisplayShoppingCart(List<Item> shoppingCart)
+        public static void DisplayReceipt(List<Item> shoppingCart)
         {
-            Console.WriteLine("Items in Cart:");
+            Console.WriteLine($"Receipt: {shoppingCart.Count}");
+            Double totalTaxes = CalculateTaxesForAllPurchasedItems(shoppingCart);
+            Double total = CalculateTotalPrice(shoppingCart);
             int i = 1;
             foreach (var item in shoppingCart)
             {
-                Console.WriteLine($"{i}) Name: {item.ItemName} || Price: {item.ItemRetailPrice}");
+                Console.WriteLine($"{i}) Name: {item.ItemName} {(shoppingCart.Count > 1 ? $"|| Price: {item.TotalPriceAfterTax}$" : "")} {(item.Quantity > 1 ? $"|| ({item.Quantity}) @ {item.ItemRetailPrice}" : "")}");
                 i++;
             }
+            Console.WriteLine($"Total Taxes: {totalTaxes}$");
+            Console.WriteLine($"Total: {total}$");
+        }
+
+        public static Double CalculateTotalPrice(List<Item> shoppingCart)
+        {
+            Double total = 0;
+            foreach (var item in shoppingCart)
+            {
+                //? Need parseFloat as parseInt will only parse the leading part of the string that defines a whole number.
+                //? Reference: https://stackoverflow.com/questions/28894971/problems-with-javascript-parseint-decimal-string
+                total += item.TotalPriceAfterTax;
+            }
+            return total;
+        }
+
+        public static Double CalculateTaxesForAllPurchasedItems(List<Item> shoppingCart)
+        {
+            Double totalTaxes = 0;
+            foreach (var item in shoppingCart)
+            {
+                totalTaxes += item.AccruedOverallTax;
+            }
+            return totalTaxes;
         }
     }
 }

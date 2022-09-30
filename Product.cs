@@ -8,11 +8,6 @@ namespace SalesTaxesConsoleApp
 {
     public class Product
     {
-        //private string _name;
-        //private string _type;
-        //private string _price;
-        //private bool _import;
-
         public string Name;
         public string Type;
         public string Price;
@@ -25,7 +20,7 @@ namespace SalesTaxesConsoleApp
             Price = price;
             Import = import;
         }
-        
+
         public string GetProductName()
         {
             return Name;
