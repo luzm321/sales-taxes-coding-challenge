@@ -29,9 +29,9 @@ namespace SalesTaxesConsoleApp
 
             if (IsImport)
             {
-                //? Round up then add to original price to get the total with tax.
+                // Round up then add to original price to get the total with tax.
                 Double calculatedPriceAfter5PercentTax = (productPrice * itemTax) + productPrice;
-                //? Reference: https://stackoverflow.com/questions/10413573/rounding-up-to-the-nearest-0-05-in-javascript
+                // Reference: https://stackoverflow.com/questions/10413573/rounding-up-to-the-nearest-0-05-in-javascript
                 Double roundedToNearest5Cent = (Math.Ceiling(calculatedPriceAfter5PercentTax * 20) / 20);
                 totalPriceAfterImportTax += roundedToNearest5Cent;
                 importTax = totalPriceAfterImportTax - productPrice;
